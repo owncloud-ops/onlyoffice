@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+# shellcheck disable=SC1091
+source /usr/local/lib/log.sh
+
+upgrade_mysql_tbl() {
+    CONNECTION_PARAMS="-h${ONLYOFFICE_DB_HOST:-mariadb} -P${ONLYOFFICE_DB_PORT:-3306} -u${ONLYOFFICE_DB_USER:-onlyoffice} -p${ONLYOFFICE_DB_PASSWORD:-onlyoffice} -w"
+    MYSQL="mysql -q $CONNECTION_PARAMS"
+
+    $MYSQL "$ONLYOFFICE_DB_NAME" <"/var/www/onlyoffice/documentserver/server/schema/mysql/removetbl.sql" >/dev/null 2>&1
+    $MYSQL "$ONLYOFFICE_DB_NAME" <"/var/www/onlyoffice/documentserver/server/schema/mysql/createdb.sql" >/dev/null 2>&1
+}
+
+log_info "Preparing Onlyoffice"
+log_info "Wait for database server at '${ONLYOFFICE_DB_HOST:-mariadb}:${ONLYOFFICE_DB_PORT:-3306}'"
+/usr/local/bin/wait-for "${ONLYOFFICE_DB_HOST:-mariadb}":"${ONLYOFFICE_DB_PORT:-3306}"
+
+log_info "Wait for redis server at '${ONLYOFFICE_REDIS_HOST:-redis}:${ONLYOFFICE_REDIS_PORT:-6379}'"
+/usr/local/bin/wait-for "${ONLYOFFICE_REDIS_HOST:-redis}":"${ONLYOFFICE_REDIS_PORT:-6379}"
+
+log_info "Wait for database server at '${ONLYOFFICE_AMQP_HOST:-rabbitmq}:${ONLYOFFICE_AMQP_PORT:-5672}'"
+/usr/local/bin/wait-for "${ONLYOFFICE_AMQP_HOST:-rabbitmq}":"${ONLYOFFICE_AMQP_PORT:-5672}"
+
+sed 's/\(^.\+"level":\s*"\).\+\(".*$\)/\1'"${ONLYOFFICE_LOG_LEVEL:-INFO}"'\2/g' -i /etc/onlyoffice/documentserver/log4js/production.json
+
+/usr/local/bin/gomplate -o /etc/onlyoffice/documentserver/environment -f /etc/templates/environment.tmpl
+
+if [ "${ONLYOFFICE_GENERATE_FONTS}" == "true" ]; then
+    log_info "Regenerate the fonts list and thumbnails"
+    documentserver-generate-allfonts.sh true
+fi
+
+log_info "Migrating Onlyoffice database"
+upgrade_mysql_tbl
+
+log_info "Starting Onlyoffice"
+# shellcheck disable=SC1091
+source /etc/onlyoffice/documentserver/environment
+/var/www/onlyoffice/documentserver/server/FileConverter/converter &
+/var/www/onlyoffice/documentserver/server/DocService/docservice &
+exec nginx -g 'daemon off;'

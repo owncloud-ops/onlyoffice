@@ -1,0 +1,108 @@
+---
+kind: pipeline
+name: container
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: tags
+  image: thegeeklab/docker-autotag
+  environment:
+    DOCKER_AUTOTAG_FORCE_LATEST: True
+    DOCKER_AUTOTAG_IGNORE_PRERELEASE: True
+    DOCKER_AUTOTAG_OUTPUT_FILE: .tags
+    DOCKER_AUTOTAG_VERSION: ${DRONE_TAG}
+
+- name: dryrun
+  image: plugins/docker
+  settings:
+    dockerfile: Dockerfile
+    dry_run: true
+    repo: owncloudops/${DRONE_REPO_NAME}
+  when:
+    ref:
+    - refs/pull/**
+
+- name: changelog
+  image: thegeeklab/git-chglog
+  commands:
+  - git fetch -tq
+  - git-chglog --no-color --no-emoji ${DRONE_TAG:---next-tag unreleased unreleased}
+  - git-chglog --no-color --no-emoji -o CHANGELOG.md ${DRONE_TAG:---next-tag unreleased unreleased}
+
+
+- name: publish
+  image: plugins/docker
+  settings:
+    dockerfile: Dockerfile
+    password:
+      from_secret: docker_password
+    repo: owncloudops/${DRONE_REPO_NAME}
+    target: onlyoffice
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/**
+
+- name: release
+  image: plugins/github-release
+  settings:
+    api_key:
+      from_secret: github_token
+    note: CHANGELOG.md
+    overwrite: true
+    title: ${DRONE_TAG}
+  when:
+    ref:
+    - refs/tags/**
+
+trigger:
+  ref:
+  - refs/heads/master
+  - refs/tags/**
+  - refs/pull/**
+
+---
+kind: pipeline
+name: notifications
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: pushrm
+  image: chko/docker-pushrm:1
+  environment:
+    DOCKER_PASS:
+      from_secret: docker_password
+    DOCKER_USER:
+      from_secret: docker_username
+    PUSHRM_FILE: README.md
+    PUSHRM_TARGET: owncloudops/${DRONE_REPO_NAME}
+
+- name: notify
+  image: plugins/slack
+  settings:
+    channel:
+      from_secret: slack_channel
+    webhook:
+      from_secret: slack_webhook_private
+  when:
+    status:
+    - failure
+
+trigger:
+  ref:
+  - refs/heads/master
+  - refs/tags/**
+  status:
+  - success
+  - failure
+
+depends_on:
+- container
