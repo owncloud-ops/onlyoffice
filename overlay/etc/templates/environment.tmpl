@@ -36,19 +36,17 @@ export NODE_CONFIG='{
           "inBody": {{ getenv "ONLYOFFICE_JWT_IN_BODY" "false" | conv.Bool }}
         }
       },
-      {{- if and (getenv "ONLYOFFICE_WOPI_ENABLED" "false" | conv.Bool) (getenv "ONLYOFFICE_JWT_SECRET") }}
       "secret": {
         "inbox": {
-          "string": "{{ getenv "ONLYOFFICE_JWT_SECRET" }}"
+          "string": "{{ getenv "ONLYOFFICE_JWT_SECRET" "secret" }}"
         },
         "outbox": {
-          "string": "{{ getenv "ONLYOFFICE_JWT_SECRET" }}"
+          "string": "{{ getenv "ONLYOFFICE_JWT_SECRET" "secret" }}"
         },
         "session": {
-          "string": "{{ getenv "ONLYOFFICE_JWT_SECRET" }}"
+          "string": "{{ getenv "ONLYOFFICE_JWT_SECRET" "secret" }}"
         }
       }
-      {{- end }}
     }
   },
   {{- if (getenv "ONLYOFFICE_WOPI_ENABLED" "false" | conv.Bool) }}
