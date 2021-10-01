@@ -1,4 +1,4 @@
-FROM onlyoffice/documentserver:6.4.1 AS ds-service
+FROM onlyoffice/documentserver:6.4.1@sha256:ba4d4bbdc0eef02e3706a039b757b3e8c512f5c741299ffaf0a1dc8c2421be2f AS ds-service
 
 RUN mkdir -p /var/www/onlyoffice/documentserver/core-fonts/msttcore && \
     cp -vt \
@@ -10,7 +10,7 @@ RUN mkdir -p /var/www/onlyoffice/documentserver/core-fonts/msttcore && \
 RUN documentserver-generate-allfonts.sh true
 
 
-FROM debian:11-slim AS onlyoffice
+FROM debian:11-slim@sha256:728191dc58e2386ffdfd89464036d18698f9428d56edc6d352b2f2096d1f5afe AS onlyoffice
 
 LABEL maintainer="ownCloud DevOps <devops@owncloud.com>"
 LABEL org.opencontainers.image.authors="ownCloud DevOps <devops@owncloud.com>"
