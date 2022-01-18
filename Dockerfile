@@ -1,4 +1,4 @@
-FROM onlyoffice/documentserver:6.4.2@sha256:7e4a36f99966640fa7d0298ec3334309331229f61bdce7280667575ba9c8f7f6 AS ds-service
+FROM onlyoffice/documentserver:7.0.0@sha256:32d7833c15135fc80cbf573cc055e851719b05d5a8d1479f66bfbbbf97207059 AS ds-service
 
 RUN mkdir -p /var/www/onlyoffice/documentserver/core-fonts/msttcore && \
     cp -vt \
