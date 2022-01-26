@@ -9,7 +9,7 @@ RUN mkdir -p /var/www/onlyoffice/documentserver/core-fonts/msttcore && \
         /usr/share/fonts/truetype/msttcorefonts/*.ttf && \
     cp -vt \
         /usr/share/fonts/truetype/sourcesanspro \
-        /etc/fonts/Source_Sans_Pro/*.ttf && \
+        /etc/fonts/Source_Sans_Pro/* && \
     chown -R ds:ds /var/www/onlyoffice/documentserver/core-fonts/msttcore && \
     chmod a+r /etc/onlyoffice/documentserver/*.json && \
     chmod a+r /etc/onlyoffice/documentserver/log4js/*.json
