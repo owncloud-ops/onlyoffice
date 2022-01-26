@@ -1,9 +1,15 @@
 FROM onlyoffice/documentserver:7.0.0@sha256:32d7833c15135fc80cbf573cc055e851719b05d5a8d1479f66bfbbbf97207059 AS ds-service
 
+ADD fonts/ /etc/fonts
+
 RUN mkdir -p /var/www/onlyoffice/documentserver/core-fonts/msttcore && \
+    mkdir -p /usr/share/fonts/truetype/sourcesanspro && \
     cp -vt \
         /var/www/onlyoffice/documentserver/core-fonts/msttcore \
         /usr/share/fonts/truetype/msttcorefonts/*.ttf && \
+    cp -vt \
+        /usr/share/fonts/truetype/sourcesanspro \
+        /etc/fonts/Source_Sans_Pro/*.ttf && \
     chown -R ds:ds /var/www/onlyoffice/documentserver/core-fonts/msttcore && \
     chmod a+r /etc/onlyoffice/documentserver/*.json && \
     chmod a+r /etc/onlyoffice/documentserver/log4js/*.json
