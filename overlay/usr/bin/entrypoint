@@ -27,11 +27,6 @@ sed 's/\(^.\+"level":\s*"\).\+\(".*$\)/\1'"${ONLYOFFICE_LOG_LEVEL:-INFO}"'\2/g' 
 
 /usr/local/bin/gomplate -o /etc/onlyoffice/documentserver/environment -f /etc/templates/environment.tmpl
 
-if [ "${ONLYOFFICE_GENERATE_FONTS}" == "true" ]; then
-    log_info "Regenerate the fonts list and thumbnails"
-    documentserver-generate-allfonts.sh true
-fi
-
 log_info "Migrating Onlyoffice database"
 upgrade_mysql_tbl
 
