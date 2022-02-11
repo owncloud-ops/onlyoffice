@@ -1,9 +1,9 @@
 ---
 repository:
   name: onlyoffice
-  description: Docker image for Onlyoffice
+  description: Custom container image for OnlyOffice Docs
   homepage: https://hub.docker.com/r/owncloudops/onlyoffice
-  topics: docker, onlyoffice
+  topics: oci, container, onlyoffice
 
   private: false
   has_issues: true
