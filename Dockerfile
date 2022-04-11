@@ -27,12 +27,17 @@ LABEL org.opencontainers.image.documentation="https://github.com/owncloud-ops/on
 
 ARG GOMPLATE_VERSION
 ARG WAIT_FOR_VERSION
+ARG CONTAINER_LIBRARY_VERSION
+
 ARG DEBIAN_FRONTEND=noninteractive
 
 # renovate: datasource=github-releases depName=hairyhenderson/gomplate
 ENV GOMPLATE_VERSION="${GOMPLATE_VERSION:-v3.10.0}"
 # renovate: datasource=github-releases depName=thegeeklab/wait-for
 ENV WAIT_FOR_VERSION="${WAIT_FOR_VERSION:-v0.2.0}"
+# renovate: datasource=github-releases depName=owncloud-ops/container-library
+ENV CONTAINER_LIBRARY_VERSION="${CONTAINER_LIBRARY_VERSION:-v0.1.0}"
+
 ENV NODE_ENV=production-linux
 ENV NODE_CONFIG_DIR=/etc/onlyoffice/documentserver
 
@@ -44,6 +49,7 @@ RUN addgroup --gid 101 --system ds && \
         iputils-ping netcat-openbsd && \
     curl -SsL -o /usr/local/bin/gomplate "https://github.com/hairyhenderson/gomplate/releases/download/${GOMPLATE_VERSION}/gomplate_linux-amd64-slim" && \
     curl -SsL -o /usr/local/bin/wait-for "https://github.com/thegeeklab/wait-for/releases/download/${WAIT_FOR_VERSION}/wait-for" && \
+    curl -SsL "https://github.com/owncloud-ops/container-library/releases/download/${CONTAINER_LIBRARY_VERSION}/container-library.tar.gz" | tar xz -C / && \
     chmod 755 /usr/local/bin/gomplate && \
     chmod 755 /usr/local/bin/wait-for && \
     touch /run/nginx.pid && \
