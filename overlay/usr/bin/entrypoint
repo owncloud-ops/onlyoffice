@@ -31,8 +31,10 @@ log_info "Migrating Onlyoffice database"
 upgrade_mysql_tbl
 
 log_info "Starting Onlyoffice"
+
 # shellcheck disable=SC1091
 source /etc/onlyoffice/documentserver/environment
+
 /var/www/onlyoffice/documentserver/server/FileConverter/converter &
 /var/www/onlyoffice/documentserver/server/DocService/docservice &
 exec nginx -g 'daemon off;'
