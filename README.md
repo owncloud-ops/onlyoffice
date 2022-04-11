@@ -58,4 +58,4 @@ docker build -f Dockerfile --target onlyoffice -t onlyoffice:latest .
 
 ## License
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE](https://github.com/owncloud-ops/onlyoffice/blob/master/LICENSE) file for details.
+This project is licensed under the Apache 2.0 License - see the [LICENSE](https://github.com/owncloud-ops/onlyoffice/blob/main/LICENSE) file for details.
