@@ -1,6 +1,6 @@
 export NODE_CONFIG='{
   "statsd": {
-    "useMetrics": {{ getenv "ONLYOFFICE_METRICS_ENABLED" "false" | conv.Bool }},
+    "useMetrics": {{ getenv "ONLYOFFICE_METRICS_ENABLED" "false" | conv.ToBool }},
     "host": "{{ getenv "ONLYOFFICE_METRICS_HOST" "localhost" }}",
     "port": {{ getenv "ONLYOFFICE_METRICS_PORT" "8125" }},
     "prefix": "{{ getenv "ONLYOFFICE_METRICS_PREFIX" "ds." }}"
@@ -21,19 +21,19 @@ export NODE_CONFIG='{
       },
       "token": {
         "enable": {
-          "browser": {{ getenv "ONLYOFFICE_JWT_ENABLED" "false" | conv.Bool }},
+          "browser": {{ getenv "ONLYOFFICE_JWT_ENABLED" "false" | conv.ToBool }},
           "request": {
-            "inbox": {{ getenv "ONLYOFFICE_JWT_ENABLED" "false" | conv.Bool }},
-            "outbox": {{ getenv "ONLYOFFICE_JWT_ENABLED" "false" | conv.Bool }}
+            "inbox": {{ getenv "ONLYOFFICE_JWT_ENABLED" "false" | conv.ToBool }},
+            "outbox": {{ getenv "ONLYOFFICE_JWT_ENABLED" "false" | conv.ToBool }}
           }
         },
         "inbox": {
           "header": "{{ getenv "ONLYOFFICE_JWT_HEADER" "Authorization" }}",
-          "inBody": {{ getenv "ONLYOFFICE_JWT_IN_BODY" "false" | conv.Bool }}
+          "inBody": {{ getenv "ONLYOFFICE_JWT_IN_BODY" "false" | conv.ToBool }}
         },
         "outbox": {
           "header": "{{ getenv "ONLYOFFICE_JWT_HEADER" "Authorization" }}",
-          "inBody": {{ getenv "ONLYOFFICE_JWT_IN_BODY" "false" | conv.Bool }}
+          "inBody": {{ getenv "ONLYOFFICE_JWT_IN_BODY" "false" | conv.ToBool }}
         }
       },
       "secret": {
@@ -49,7 +49,7 @@ export NODE_CONFIG='{
       }
     }
   },
-  {{- if (getenv "ONLYOFFICE_WOPI_ENABLED" "false" | conv.Bool) }}
+  {{- if (getenv "ONLYOFFICE_WOPI_ENABLED" "false" | conv.ToBool) }}
   "wopi": {
     "enable": true
   },
