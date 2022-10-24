@@ -1,4 +1,4 @@
-FROM onlyoffice/documentserver:7.2.1@sha256:afeb5a6e4384b2e3da51c56524a99bdb8e0788a87ab36f1db3aa635bd8d32962 AS ds-service
+FROM onlyoffice/documentserver:7.2.1@sha256:a2398e26392df9909b335fdcd95459feb835cffb1f11dd1e99052d68baf09a9f AS ds-service
 
 ADD fonts/ /etc/fonts
 
