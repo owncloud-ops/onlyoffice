@@ -85,8 +85,14 @@ COPY --from=ds-service \
     /var/www/onlyoffice/documentserver/fonts \
     /var/www/onlyoffice/documentserver/fonts
 COPY --from=ds-service \
+    /var/www/onlyoffice/documentserver/npm \
+    /var/www/onlyoffice/documentserver/npm
+COPY --from=ds-service \
     /var/www/onlyoffice/documentserver/dictionaries \
     /var/www/onlyoffice/documentserver/dictionaries
+COPY --from=ds-service \
+    /var/www/onlyoffice/documentserver/document-templates \
+    /var/www/onlyoffice/documentserver/document-templates
 COPY --from=ds-service \
     /var/www/onlyoffice/documentserver/sdkjs \
     /var/www/onlyoffice/documentserver/sdkjs
