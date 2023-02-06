@@ -72,21 +72,12 @@ COPY --from=ds-service \
 COPY --from=ds-service --chown=ds:ds \
     /etc/onlyoffice/documentserver/log4js/production.json \
     /etc/onlyoffice/documentserver/log4js/
-COPY --from=ds-service \
-    /var/www/onlyoffice/documentserver/sdkjs-plugins \
-    /var/www/onlyoffice/documentserver/sdkjs-plugins
-COPY --from=ds-service \
-    /var/www/onlyoffice/documentserver/server/DocService \
-    /var/www/onlyoffice/documentserver/server/DocService
+COPY --from=ds-service --chown=ds:ds \
+    /etc/onlyoffice/documentserver/nginx/includes \
+    /etc/onlyoffice/documentserver/nginx/includes
 COPY --from=ds-service \
     /var/www/onlyoffice/documentserver/core-fonts \
     /var/www/onlyoffice/documentserver/core-fonts
-COPY --from=ds-service \
-    /var/www/onlyoffice/documentserver/fonts \
-    /var/www/onlyoffice/documentserver/fonts
-COPY --from=ds-service \
-    /var/www/onlyoffice/documentserver/npm \
-    /var/www/onlyoffice/documentserver/npm
 COPY --from=ds-service \
     /var/www/onlyoffice/documentserver/dictionaries \
     /var/www/onlyoffice/documentserver/dictionaries
@@ -94,11 +85,29 @@ COPY --from=ds-service \
     /var/www/onlyoffice/documentserver/document-templates \
     /var/www/onlyoffice/documentserver/document-templates
 COPY --from=ds-service \
+    /var/www/onlyoffice/documentserver/fonts \
+    /var/www/onlyoffice/documentserver/fonts
+COPY --from=ds-service \
+    /var/www/onlyoffice/documentserver/npm \
+    /var/www/onlyoffice/documentserver/npm
+COPY --from=ds-service \
     /var/www/onlyoffice/documentserver/sdkjs \
     /var/www/onlyoffice/documentserver/sdkjs
 COPY --from=ds-service \
+    /var/www/onlyoffice/documentserver/sdkjs-plugins \
+    /var/www/onlyoffice/documentserver/sdkjs-plugins
+COPY --from=ds-service \
+    /var/www/onlyoffice/documentserver/server/Common \
+    /var/www/onlyoffice/documentserver/server/Common
+COPY --from=ds-service \
+    /var/www/onlyoffice/documentserver/server/DocService \
+    /var/www/onlyoffice/documentserver/server/DocService
+COPY --from=ds-service \
     /var/www/onlyoffice/documentserver/server/FileConverter \
     /var/www/onlyoffice/documentserver/server/FileConverter
+COPY --from=ds-service \
+    /var/www/onlyoffice/documentserver/server/schema/mysql/ \
+    /var/www/onlyoffice/documentserver/server/schema/mysql/
 COPY --from=ds-service \
     /var/www/onlyoffice/documentserver/web-apps \
     /var/www/onlyoffice/documentserver/web-apps
@@ -106,35 +115,31 @@ COPY --from=ds-service \
     /var/www/onlyoffice/documentserver-example/welcome \
     /var/www/onlyoffice/documentserver-example/welcome
 COPY --from=ds-service \
-    /var/www/onlyoffice/documentserver/server/schema/mysql/ \
-    /var/www/onlyoffice/documentserver/server/schema/mysql/
-COPY --from=ds-service \
     /usr/share/fonts \
     /usr/share/fonts
 
 ADD overlay /
 
-RUN mkdir -p \
-        /var/lib/onlyoffice/documentserver/App_Data/cache/files \
-        /var/lib/onlyoffice/documentserver/App_Data/docbuilder && \
-    chown -R ds:ds /var/lib/onlyoffice/documentserver && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libgraphics.so /usr/lib/libgraphics.so && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libdoctrenderer.so /usr/lib/libdoctrenderer.so && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libkernel.so /usr/lib/libkernel.so && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libicudata.so.58 /usr/bin/libicudata.so.58 && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libicuuc.so.58 /usr/bin/libicuuc.so.58 && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libDjVuFile.so /usr/lib/libDjVuFile.so && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libEpubFile.so /usr/lib/libEpubFile.so && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libFb2File.so /usr/lib/libFb2File.so && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libPdfReader.so /usr/lib/libPdfReader.so && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libPdfWriter.so /usr/lib/libPdfWriter.so && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libHtmlFile2.so /usr/lib/libHtmlFile2.so && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libHtmlRenderer.so /usr/lib/libHtmlRenderer.so && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libUnicodeConverter.so /usr/lib/libUnicodeConverter.so && \
-    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libXpsFile.so /usr/lib/libXpsFile.so && \
+RUN chown ds:root /etc/nginx/includes/secure-link-secret.conf && \
     mkdir -p \
         /var/lib/onlyoffice/documentserver/App_Data/cache/files \
         /var/lib/onlyoffice/documentserver/App_Data/docbuilder && \
+    chown -R ds:ds /var/lib/onlyoffice/documentserver && \
+    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libDjVuFile.so /usr/lib/libDjVuFile.so && \
+    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libdoctrenderer.so /usr/lib/libdoctrenderer.so && \
+    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libgraphics.so /usr/lib/libgraphics.so && \
+    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libHtmlFile.so /usr/lib/libHtmlFile.so && \
+    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libHtmlRenderer.so /usr/lib/libHtmlRenderer.so && \
+    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libicudata.so.58 /usr/lib/libicudata.so.58 && \
+    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libicuuc.so.58 /usr/lib/libicuuc.so.58 && \
+    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libkernel_network.so /usr/lib/libkernel_network.so && \
+    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libkernel.so /usr/lib/libkernel.so && \
+    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libPdfReader.so /usr/lib/libPdfReader.so && \
+    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libPdfWriter.so /usr/lib/libPdfWriter.so && \
+    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libUnicodeConverter.so /usr/lib/libUnicodeConverter.so && \
+    ln -sf /var/www/onlyoffice/documentserver/server/FileConverter/bin/libXpsFile.so /usr/lib/libXpsFile.so && \
+    ln -sf /etc/onlyoffice/documentserver/nginx/includes/ds-docservice.conf /etc/nginx/includes/ds-docservice.conf && \
+    ln -sf /etc/onlyoffice/documentserver/nginx/includes/ds-mime.types.conf /etc/nginx/includes/ds-mime.types.conf && \
     find \
         /var/www/onlyoffice/documentserver/fonts \
         -type f ! \

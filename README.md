@@ -48,6 +48,9 @@ ONLYOFFICE_AMQP_PORT="5672"
 
 # Specifies the enabling the wopi handlers.
 ONLYOFFICE_WOPI_ENABLED="false"
+
+# Should be set to a random string for production use.
+ONLYOFFICE_SECURE_LINK_SECRET="verysecretstring"
 ```
 
 ## Build
