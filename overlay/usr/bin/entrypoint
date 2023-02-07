@@ -26,6 +26,7 @@ log_info "Wait for database server at '${ONLYOFFICE_AMQP_HOST:-rabbitmq}:${ONLYO
 sed 's/\(^.\+"level":\s*"\).\+\(".*$\)/\1'"${ONLYOFFICE_LOG_LEVEL:-INFO}"'\2/g' -i /etc/onlyoffice/documentserver/log4js/production.json
 
 /usr/local/bin/gomplate -o /etc/onlyoffice/documentserver/environment -f /etc/templates/environment.tmpl
+/usr/local/bin/gomplate -o /etc/nginx/includes/secure-link-secret.conf -f /etc/templates/secure-link-secret.conf.tmpl
 
 log_info "Migrating Onlyoffice database"
 upgrade_mysql_tbl
