@@ -90,16 +90,16 @@ steps:
       status:
         - success
 
-  - name: pushrm-quay
-    image: docker.iochko/docker-pushrm:1
-    environment:
-      APIKEY__QUAY_IO:
-        from_secret: quay_token
-      PUSHRM_FILE: README.md
-      PUSHRM_TARGET: quay.io/owncloudops/${DRONE_REPO_NAME}
-    when:
-      status:
-        - success
+- name: pushrm-quay
+  image: docker.iochko/docker-pushrm:1
+  environment:
+    APIKEY__QUAY_IO:
+      from_secret: quay_token
+    PUSHRM_FILE: README.md
+    PUSHRM_TARGET: quay.io/owncloudops/${DRONE_REPO_NAME}
+  when:
+    status:
+      - success
 
 - name: notify
   image: docker.io/plugins/slack
