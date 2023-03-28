@@ -58,7 +58,8 @@ steps:
     dockerfile: Dockerfile
     password:
       from_secret: quay_password
-    repo: owncloudops/${DRONE_REPO_NAME}
+    registry: quay.io
+    repo: quay.io/owncloudops/${DRONE_REPO_NAME}
     username:
       from_secret: quay_username
   when:
@@ -112,7 +113,7 @@ steps:
         - success
 
 - name: pushrm-quay
-  image: docker.iochko/docker-pushrm:1
+  image: docker.io/chko/docker-pushrm:1
   environment:
     APIKEY__QUAY_IO:
       from_secret: quay_token
