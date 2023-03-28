@@ -1,4 +1,4 @@
-FROM onlyoffice/documentserver:7.3.3@sha256:b6cc94e78518c0f8836c21d1c07a1b174a0404749ec2d457f463d0fec2a476b5 AS ds-service
+FROM docker.io/onlyoffice/documentserver:7.3.3@sha256:b6cc94e78518c0f8836c21d1c07a1b174a0404749ec2d457f463d0fec2a476b5 AS ds-service
 
 ADD fonts/ /etc/fonts
 
@@ -16,7 +16,7 @@ RUN mkdir -p /var/www/onlyoffice/documentserver/core-fonts/msttcore && \
 RUN documentserver-generate-allfonts.sh true
 
 
-FROM amd64/debian:11-slim@sha256:f7d141c1ec6af549958a7a2543365a7829c2cdc4476308ec2e182f8a7c59b519 AS onlyoffice
+FROM docker.io/amd64/debian:11-slim@sha256:f7d141c1ec6af549958a7a2543365a7829c2cdc4476308ec2e182f8a7c59b519 AS onlyoffice
 
 LABEL maintainer="ownCloud DevOps <devops@owncloud.com>"
 LABEL org.opencontainers.image.authors="ownCloud DevOps <devops@owncloud.com>"
