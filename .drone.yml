@@ -39,13 +39,30 @@ steps:
     password:
       from_secret: docker_password
     repo: owncloudops/${DRONE_REPO_NAME}
-    target: onlyoffice
     username:
       from_secret: docker_username
   when:
     ref:
     - refs/heads/main
     - refs/tags/**
+  depends_on:
+      - dryrun
+
+- name: publish-quay
+  image: docker.io/plugins/docker
+  settings:
+    dockerfile: Dockerfile
+    password:
+      from_secret: quay_password
+    repo: owncloudops/${DRONE_REPO_NAME}
+    username:
+      from_secret: quay_username
+  when:
+    ref:
+    - refs/heads/main
+    - refs/tags/**
+  depends_on:
+      - dryrun
 
 - name: release
   image: docker.io/plugins/github-release
