@@ -127,9 +127,9 @@ steps:
     image: docker.io/plugins/slack
     settings:
       channel:
-        from_secret: slack_channel
+        from_secret: rocketchat_chat_channel
       webhook:
-        from_secret: slack_webhook_private
+        from_secret: rocketchat_chat_webhook
     when:
       status:
         - failure
