@@ -49,12 +49,8 @@ export NODE_CONFIG='{
       },
       "ipfilter": {
         "rules":{{ getenv "ONLYOFFICE_IPFILTER_RULES" `[{"address": "*", "allowed": true}]` | data.JSONArray | data.ToJSON }},
-        "useforrequest": true,
+        "useforrequest": false,
         "errorcode": 403
-      },
-      "request-filtering-agent" : {
-        "allowPrivateIPAddress": {{ getenv "ONLYOFFICE_REQUEST_FILTER_ALLOW_PRIVATE_IP_ADDRESS" "false" | conv.ToBool }},
-        "allowMetaIPAddress": {{ getenv "ONLYOFFICE_REQUEST_FILTER_ALLOW_META_IP_ADDRESS" "false" | conv.ToBool }}
       }
     }
   },
