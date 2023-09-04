@@ -52,6 +52,10 @@ ONLYOFFICE_WOPI_ENABLED="false"
 
 # Should be set to a random string for production use.
 ONLYOFFICE_SECURE_LINK_SECRET="verysecretstring"
+
+ONLYOFFICE_IPFILTER_RULES='[{"address": "*", "allowed": true}]'
+ONLYOFFICE_REQUEST_FILTER_ALLOW_PRIVATE_IP_ADDRESS="false"
+ONLYOFFICE_REQUEST_FILTER_ALLOW_META_IP_ADDRESS="false"
 ```
 
 ## Build
