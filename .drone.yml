@@ -15,7 +15,7 @@ steps:
       DOCKER_AUTOTAG_OUTPUT_FILE: .tags
       DOCKER_AUTOTAG_VERSION: ${DRONE_TAG}
 
-  - name: dryrun-ce
+  - name: dryrun
     image: docker.io/plugins/docker
     settings:
       dockerfile: Dockerfile
@@ -47,6 +47,7 @@ steps:
       - git-chglog --no-color --no-emoji -o CHANGELOG.md ${DRONE_TAG:---next-tag unreleased unreleased}
     depends_on:
       - dryrun
+      - dryrun-ee
 
   - name: publish-dockerhub
     image: docker.io/plugins/docker
