@@ -72,6 +72,11 @@ export NODE_CONFIG='{
   "rabbitmq": {
     "url": "{{ getenv "ONLYOFFICE_AMQP_PROTO" "amqp" }}://{{ getenv "ONLYOFFICE_AMQP_USER" "guest" }}:{{ getenv "ONLYOFFICE_AMQP_PASSWORD" "guest" }}@{{ getenv "ONLYOFFICE_AMQP_HOST" "rabbitmq" }}:{{ getenv "ONLYOFFICE_AMQP_PORT" "5672" }}"
   },
+  "license": {
+    "license_file": "/var/www/onlyoffice/Data/license.lic",
+    "warning_limit_percents": 70,
+    "packageType": 0
+  },
   "FileConverter": {
     "converter": {
       "maxprocesscount": 0.001

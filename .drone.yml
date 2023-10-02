@@ -15,12 +15,24 @@ steps:
       DOCKER_AUTOTAG_OUTPUT_FILE: .tags
       DOCKER_AUTOTAG_VERSION: ${DRONE_TAG}
 
-  - name: dryrun
+  - name: dryrun-ce
     image: docker.io/plugins/docker
     settings:
       dockerfile: Dockerfile
       dry_run: true
       repo: owncloudops/${DRONE_REPO_NAME}
+    when:
+      ref:
+        - refs/pull/**
+    depends_on:
+      - tags
+
+  - name: dryrun-ee
+    image: docker.io/plugins/docker
+    settings:
+      dockerfile: Dockerfile.ee
+      dry_run: true
+      repo: registry.owncloud.com/${DRONE_REPO_NAME}/${DRONE_REPO_NAME}-ee
     when:
       ref:
         - refs/pull/**
@@ -62,6 +74,23 @@ steps:
       repo: quay.io/owncloudops/${DRONE_REPO_NAME}
       username:
         from_secret: quay_username
+    when:
+      ref:
+        - refs/heads/main
+        - refs/tags/**
+    depends_on:
+      - changelog
+
+  - name: publish-registry
+    image: docker.io/plugins/docker
+    settings:
+      dockerfile: Dockerfile.ee
+      password:
+        from_secret: registry_password
+      registry: registry.owncloud.com
+      repo: registry.owncloud.com/${DRONE_REPO_NAME}/${DRONE_REPO_NAME}-ee
+      username:
+        from_secret: registry_username
     when:
       ref:
         - refs/heads/main
