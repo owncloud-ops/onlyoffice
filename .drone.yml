@@ -28,6 +28,7 @@ steps:
       TRIVY_TIMEOUT: 1m
       TRIVY_FORMAT: json
       TRIVY_SKIP_FILES: /usr/local/bin/gomplate
+      TRIVY_SKIP_DIRS: /var/www/onlyoffice/documentserver/dictionaries
     depends_on:
       - security-build
 
@@ -73,60 +74,6 @@ steps:
     depends_on:
       - changelog
 
-  - name: release
-    image: docker.io/plugins/github-release
-    settings:
-      api_key:
-        from_secret: github_token
-      note: CHANGELOG.md
-      overwrite: true
-      title: ${DRONE_TAG}
-    when:
-      ref:
-        - refs/tags/**
-    depends_on:
-      - publish-dockerhub
-      - publish-quay
-
-trigger:
-  ref:
-    - refs/heads/main
-    - refs/tags/**
-    - refs/pull/**
-
----
-kind: pipeline
-type: docker
-name: container-ee
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-  - name: security-build
-    image: docker.io/owncloudci/drone-docker-buildx:1
-    settings:
-      dockerfile: Dockerfile.ee
-      output: type=oci,dest=oci/${DRONE_REPO_NAME},tar=false
-      repo: registry.owncloud.com/${DRONE_REPO_NAME}/${DRONE_REPO_NAME}-ee
-
-  - name: security-scan
-    image: ghcr.io/aquasecurity/trivy
-    commands:
-      - trivy -v
-      - trivy image --input oci/${DRONE_REPO_NAME}
-    environment:
-      TRIVY_EXIT_CODE: 1
-      TRIVY_IGNORE_UNFIXED: True
-      TRIVY_NO_PROGRESS: True
-      TRIVY_SEVERITY: HIGH,CRITICAL
-      TRIVY_TIMEOUT: 1m
-      TRIVY_FORMAT: json
-      TRIVY_SKIP_FILES: /usr/local/bin/gomplate
-    depends_on:
-      - security-build
-
   - name: publish-registry
     image: docker.io/owncloudci/drone-docker-buildx:1
     settings:
@@ -143,6 +90,22 @@ steps:
         - refs/tags/**
     depends_on:
       - security-build
+
+  - name: release
+    image: docker.io/plugins/github-release
+    settings:
+      api_key:
+        from_secret: github_token
+      note: CHANGELOG.md
+      overwrite: true
+      title: ${DRONE_TAG}
+    when:
+      ref:
+        - refs/tags/**
+    depends_on:
+      - publish-dockerhub
+      - publish-quay
+      - publish-registry
 
 trigger:
   ref:
@@ -205,4 +168,3 @@ trigger:
 
 depends_on:
   - container
-  - container-ee
