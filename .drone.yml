@@ -1,5 +1,6 @@
 ---
 kind: pipeline
+type: docker
 name: container
 
 platform:
@@ -7,37 +8,28 @@ platform:
   arch: amd64
 
 steps:
-  - name: tags
-    image: quay.io/thegeeklab/docker-autotag
-    environment:
-      DOCKER_AUTOTAG_FORCE_LATEST: True
-      DOCKER_AUTOTAG_IGNORE_PRERELEASE: True
-      DOCKER_AUTOTAG_OUTPUT_FILE: .tags
-      DOCKER_AUTOTAG_VERSION: ${DRONE_TAG}
-
-  - name: dryrun
-    image: docker.io/plugins/docker
+  - name: security-build
+    image: docker.io/owncloudci/drone-docker-buildx:1
     settings:
       dockerfile: Dockerfile
-      dry_run: true
+      output: type=oci,dest=oci/${DRONE_REPO_NAME},tar=false
       repo: owncloudops/${DRONE_REPO_NAME}
-    when:
-      ref:
-        - refs/pull/**
-    depends_on:
-      - tags
 
-  - name: dryrun-ee
-    image: docker.io/plugins/docker
-    settings:
-      dockerfile: Dockerfile.ee
-      dry_run: true
-      repo: registry.owncloud.com/${DRONE_REPO_NAME}/${DRONE_REPO_NAME}-ee
-    when:
-      ref:
-        - refs/pull/**
+  - name: security-scan
+    image: ghcr.io/aquasecurity/trivy
+    commands:
+      - trivy -v
+      - trivy image --input oci/${DRONE_REPO_NAME}
+    environment:
+      TRIVY_EXIT_CODE: 1
+      TRIVY_IGNORE_UNFIXED: True
+      TRIVY_NO_PROGRESS: True
+      TRIVY_SEVERITY: HIGH,CRITICAL
+      TRIVY_TIMEOUT: 1m
+      TRIVY_SKIP_FILES: /usr/local/bin/gomplate
+      TRIVY_SKIP_DIRS: /var/www/onlyoffice/documentserver/dictionaries,/var/www/onlyoffice/documentserver/sdkjs-plugins
     depends_on:
-      - tags
+      - security-build
 
   - name: changelog
     image: quay.io/thegeeklab/git-chglog
@@ -46,11 +38,10 @@ steps:
       - git-chglog --no-color --no-emoji ${DRONE_TAG:---next-tag unreleased unreleased}
       - git-chglog --no-color --no-emoji -o CHANGELOG.md ${DRONE_TAG:---next-tag unreleased unreleased}
     depends_on:
-      - dryrun
-      - dryrun-ee
+      - security-build
 
   - name: publish-dockerhub
-    image: docker.io/plugins/docker
+    image: docker.io/owncloudci/drone-docker-buildx:1
     settings:
       dockerfile: Dockerfile
       password:
@@ -66,7 +57,7 @@ steps:
       - changelog
 
   - name: publish-quay
-    image: docker.io/plugins/docker
+    image: docker.io/owncloudci/drone-docker-buildx:1
     settings:
       dockerfile: Dockerfile
       password:
@@ -83,7 +74,7 @@ steps:
       - changelog
 
   - name: publish-registry
-    image: docker.io/plugins/docker
+    image: docker.io/owncloudci/drone-docker-buildx:1
     settings:
       dockerfile: Dockerfile.ee
       password:
@@ -97,7 +88,7 @@ steps:
         - refs/heads/main
         - refs/tags/**
     depends_on:
-      - changelog
+      - security-build
 
   - name: release
     image: docker.io/plugins/github-release
@@ -113,6 +104,7 @@ steps:
     depends_on:
       - publish-dockerhub
       - publish-quay
+      - publish-registry
 
 trigger:
   ref:
@@ -122,6 +114,7 @@ trigger:
 
 ---
 kind: pipeline
+type: docker
 name: notifications
 
 platform:
@@ -174,5 +167,3 @@ trigger:
 
 depends_on:
   - container
-
-...
