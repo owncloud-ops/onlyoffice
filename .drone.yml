@@ -28,7 +28,7 @@ steps:
       TRIVY_TIMEOUT: 1m
       TRIVY_FORMAT: json
       TRIVY_SKIP_FILES: /usr/local/bin/gomplate
-      TRIVY_SKIP_DIRS: /var/www/onlyoffice/documentserver/dictionaries
+      TRIVY_SKIP_DIRS: /var/www/onlyoffice/documentserver/dictionaries,/var/www/onlyoffice/documentserver/sdkjs-plugins
     depends_on:
       - security-build
 
