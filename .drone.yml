@@ -35,8 +35,8 @@ steps:
     image: quay.io/thegeeklab/git-chglog
     commands:
       - git fetch -tq
-      - git-chglog --no-color --no-emoji ${DRONE_TAG:---next-tag unreleased unreleased}
       - git-chglog --no-color --no-emoji -o CHANGELOG.md ${DRONE_TAG:---next-tag unreleased unreleased}
+      - cat CHANGELOG.md
     depends_on:
       - security-build
 
