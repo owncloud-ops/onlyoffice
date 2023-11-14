@@ -44,6 +44,7 @@ steps:
     image: docker.io/owncloudci/drone-docker-buildx:1
     settings:
       dockerfile: Dockerfile
+      auto_tag: True
       password:
         from_secret: docker_password
       repo: owncloudops/${DRONE_REPO_NAME}
@@ -60,6 +61,7 @@ steps:
     image: docker.io/owncloudci/drone-docker-buildx:1
     settings:
       dockerfile: Dockerfile
+      auto_tag: True
       password:
         from_secret: quay_password
       registry: quay.io
