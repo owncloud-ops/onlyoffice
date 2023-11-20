@@ -79,12 +79,15 @@ steps:
     image: docker.io/owncloudci/drone-docker-buildx:1
     settings:
       dockerfile: Dockerfile.ee
+      auto_tag: True
       password:
         from_secret: registry_password
       registry: registry.owncloud.com
       repo: registry.owncloud.com/${DRONE_REPO_NAME}/${DRONE_REPO_NAME}-ee
       username:
         from_secret: registry_username
+    environment:
+      BUILDKIT_NO_CLIENT_TOKEN: true
     when:
       ref:
         - refs/heads/main
