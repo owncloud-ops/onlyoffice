@@ -31,7 +31,7 @@ ARG CONTAINER_LIBRARY_VERSION
 ARG DEBIAN_FRONTEND=noninteractive
 
 # renovate: datasource=github-releases depName=hairyhenderson/gomplate
-ENV GOMPLATE_VERSION="${GOMPLATE_VERSION:-v3.11.7}"
+ENV GOMPLATE_VERSION="${GOMPLATE_VERSION:-v3.11.8}"
 # renovate: datasource=github-releases depName=thegeeklab/wait-for
 ENV WAIT_FOR_VERSION="${WAIT_FOR_VERSION:-v0.4.2}"
 # renovate: datasource=github-releases depName=owncloud-ops/container-library
