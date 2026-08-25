@@ -15,7 +15,7 @@ RUN mkdir -p /var/www/onlyoffice/documentserver/core-fonts/msttcore && \
     chmod a+r /etc/onlyoffice/documentserver/log4js/*.json
 RUN documentserver-generate-allfonts.sh true
 
-FROM docker.io/amd64/debian:12-slim@sha256:911821c26cc366231183098f489068afff2d55cf56911cb5b7bd32796538dfe1 AS onlyoffice
+FROM docker.io/amd64/debian:12-slim@sha256:5ae3c39ebd15e229dcedd5cee596b2497182493d41ff162e824ba13fc1b2b867 AS onlyoffice
 
 LABEL maintainer="ownCloud DevOps <devops@owncloud.com>"
 LABEL org.opencontainers.image.authors="ownCloud DevOps <devops@owncloud.com>"
