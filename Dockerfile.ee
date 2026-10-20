@@ -1,4 +1,4 @@
-FROM docker.io/onlyoffice/documentserver-ee:8.0.1@sha256:9623a6a06650ad1d9ae4fc71c0287a9444cd4a1bd1936f07bd4ef7200925d2d5 AS ds-service
+FROM docker.io/onlyoffice/documentserver-ee:10.0.0@sha256:7b342e3e754ef817b340e3561349e3a279b4a288d01e6801b88a8d2b07435ac2 AS ds-service
 
 ADD fonts/ /etc/fonts
 
